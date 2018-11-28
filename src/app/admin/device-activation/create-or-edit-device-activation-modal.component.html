@@ -1,0 +1,42 @@
+<div bsModal #createOrEditModal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal"
+     aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #deviceACtivationForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="deviceACtivationForm.id">{{l("UpdatingDeviceActivation")}}: {{deviceActivation.code}}</span>
+                        <span *ngIf="!deviceACtivationForm.id">{{l("CreatingNewDeviceActivation")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>{{l("ActivationCode")}} *</label>
+                        <input #codeInput="ngModel" class="form-control" type="text" placeholder="Activation Code"
+                               name="code" [(ngModel)]="deviceActivation.code" required maxlength="64">
+                        <validation-messages [formCtrl]="codeInput"></validation-messages>
+                    </div>
+                    <div class="form-group">
+                        <label>{{l("Status")}} *</label>
+                        <select #statusIdInput="ngModel" class="form-control" type="text" name="statusId"
+                                [(ngModel)]="deviceActivation.statusId">
+                            <option *ngFor="let status of statusList" value="{{status.id}}">{{l(status.name)}}</option>
+                        </select>
+                       <validation-messages [formCtrl]="statusIdInput"></validation-messages>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-secondary" (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!deviceACtivationForm.form.valid" [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{l("Save")}}</span></button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

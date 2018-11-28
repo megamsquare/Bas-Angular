@@ -1,0 +1,88 @@
+<div [@routerTransition]>
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto col-xs-6">
+                <h3 class="m-subheader__title m-subheader__title--separator">
+                    <span>{{l("DeviceActivation")}}</span>
+                </h3>
+                <span class="m-section__sub">
+                    {{l("DeviceActivationInfo")}}
+                </span>
+            </div>
+            <div class="col-xs-6 text-right">
+                <button (click)="createDeviceActivation()" *ngIf="isGranted(appPermissions.Pages_Administration_Device_Activation_Create)"
+                        class="btn btn-primary blue"><i class="fa fa-plus"></i> {{l("CreatingNewDeviceActivation")}}</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__body">
+
+                <div class="row align-items-center">
+                    <!--<Primeng-TurboTable-Start>-->
+                    <div class="primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
+                        <p-table #dataTable
+                                 (onLazyLoad)="getDeviceActivations()"
+                                 [value]="primengTableHelper.records"
+                                 rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                 [paginator]="false"
+                                 [lazy]="true"
+                                 [responsive]="primengTableHelper.isResponsive">
+
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 130px" [hidden]="!isGrantedAny(appPermissions.Pages_Administration_Device_Activation_Update, appPermissions.Pages_Administration_Device_Activation_Delete)">{{l('Actions')}}</th>
+                                    <th>{{l('ActivationCode')}}</th>
+                                    <th>{{l('Status')}}</th>
+                                    <th>{{l('CreationTime')}}</th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-record="$implicit">
+                                <tr>
+                                    <td [hidden]="!isGrantedAny(appPermissions.Pages_Administration_Device_Activation_Update, appPermissions.Pages_Administration_Device_Activation_Delete)">
+                                        <div class="btn-group dropdown">
+                                            <button class="dropdown-toggle btn btn-brand btn-sm dropdown-toggle btn-primary"
+                                                    data-toggle="dropdown"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                <i class="fa fa-cog"></i><span class="caret"></span> {{l("Actions")}}
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a *ngIf="permission.isGranted(appPermissions.Pages_Administration_Device_Activation_Update)"
+                                                       (click)="createOrEditDeviceActivationModal.show(record.id)">{{l('Edit')}}</a>
+                                                </li>
+                                                <li>
+                                                    <a *ngIf="!record.isStatic && permission.isGranted(appPermissions.Pages_Administration_Device_Activation_Delete)"
+                                                       (click)="delete(record)">{{l('Delete')}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                            {{record.code}}
+                                    </td>
+                                    <td>
+                                        {{l(record.status.name)}}
+                                    </td>
+                                    <td>
+                                        {{record.creationTime | momentFormat:'L'}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        <div class="ui-table-footer">
+                            {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                        </div>
+                    </div>
+                    <!--<Primeng-TurboTable-End>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <createOrEditDeviceActivationModal #createOrEditDeviceActivationModal (modalSave)="getDeviceActivations()"></createOrEditDeviceActivationModal>
+</div>
